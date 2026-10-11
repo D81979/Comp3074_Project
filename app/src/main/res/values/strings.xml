@@ -1,3 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ScavengerHuntGroup95Project</string>
+    <string name="app_name">Scavenger Hunt</string>
+    <string name="tagline">Explore, rate and share!</string>
+    <string name="search_hint">Search by name or tag...</string>
+    <string name="done">Done</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="menu_team">Team Members</string>
+    <string name="menu_about">About</string>
+    <string name="title_form">Add Point</string>
+    <string name="title_details">Point Details</string>
+    <string name="title_map">Map</string>
+    <string name="title_team">Team Members</string>
+    <string name="title_member_form">Add Member</string>
+    <string name="title_about">About</string>
+    <string name="todo">TODO: build this screen</string>
 </resources>
