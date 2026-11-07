@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/memberFormScroll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- The title changes when editing. -->
+        <TextView
+            android:id="@+id/tvMemberFormTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Add Member"
+            android:textColor="#444444"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:labelFor="@id/etMemberName"
+            android:text="Name *"
+            android:textColor="#444444"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etMemberName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/form_field_border"
+            android:hint="Member name"
+            android:imeOptions="actionNext"
+            android:inputType="textPersonName|textCapWords"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:textColor="#444444"
+            android:textColorHint="#777777"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:labelFor="@id/etMemberEmail"
+            android:text="Email (optional)"
+            android:textColor="#444444"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etMemberEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/form_field_border"
+            android:hint="name@example.com"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:textColor="#444444"
+            android:textColorHint="#777777"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:labelFor="@id/etMemberPhone"
+            android:text="Phone (optional)"
+            android:textColor="#444444"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etMemberPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/form_field_border"
+            android:hint="Phone number"
+            android:imeOptions="actionDone"
+            android:inputType="phone"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:singleLine="true"
+            android:textColor="#444444"
+            android:textColorHint="#777777"
+            android:textSize="16sp" />
+
+        <!-- Show loading or save errors here. -->
+        <TextView
+            android:id="@+id/tvMemberFormStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:accessibilityLiveRegion="polite"
+            android:textColor="#B00020"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSaveMember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#444444"
+            android:minHeight="48dp"
+            android:text="Save Member"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCancelMember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/form_cancel_border"
+            android:backgroundTint="@null"
+            android:minHeight="48dp"
+            android:text="Cancel"
+            android:textAllCaps="false"
+            android:textColor="#444444"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Only show Delete for an existing member. -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDeleteMember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#B00020"
+            android:minHeight="48dp"
+            android:text="Delete Member"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</ScrollView>
