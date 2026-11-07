@@ -38,9 +38,7 @@ class MainActivity : AppCompatActivity() {
             SampleData.points,
             onClick = { point ->
                 val intent = Intent(this, DetailsActivity::class.java)
-                intent.putExtra("name", point.name)
-                intent.putExtra("address", point.address)
-                intent.putExtra("tags", point.tags.joinToString("  |  "))
+                intent.putExtra("index", SampleData.points.indexOf(point))
                 startActivity(intent)
             },
             onEdit = {
@@ -64,6 +62,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<FloatingActionButton>(R.id.fabAdd).setOnClickListener {
             startActivity(Intent(this, PointFormActivity::class.java))
         }
+    }
+
+    // Refresh the list when coming back from Details, so new rating/done values show up
+    override fun onResume() {
+        super.onResume()
+        applyFilters()
     }
 
     private fun confirmDelete(point: Point) {
