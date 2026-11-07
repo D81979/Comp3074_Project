@@ -23,6 +23,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 class DetailsActivity : AppCompatActivity() {
 
@@ -33,6 +37,32 @@ class DetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_details)
 
         setupBackToolbar(R.string.title_details)
+
+        // Move the screen below the status bar.
+        val root = findViewById<View>(R.id.detailsRoot)
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+            )
+
+            view.setPadding(
+                bars.left,
+                bars.top,
+                bars.right,
+                bars.bottom
+            )
+
+            insets
+        }
+
+        ViewCompat.requestApplyInsets(root)
+
+// Return to the previous screen.
+        findViewById<Toolbar>(R.id.toolbar)
+            .setNavigationOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
 
         // MainActivity sends the database ID.
         val pointId = intent.getLongExtra("point_id", 0L)
