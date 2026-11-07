@@ -84,6 +84,15 @@
             android:paddingBottom="88dp" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txtEmpty"
+        style="@style/Text.App.Hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_results"
+        android:visibility="gone" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
