@@ -8,7 +8,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
-
 @Dao
 interface HuntDao {
 
@@ -61,4 +60,27 @@ interface HuntDao {
     // Clear old selections before assigning updated tags.
     @Query("DELETE FROM point_tag_cross_ref WHERE pointId = :pointId")
     suspend fun deletePointTagLinks(pointId: Long)
+
+    // Add a new member.
+    @Insert
+    suspend fun insertMember(member: TeamMember): Long
+
+    // Update an existing member.
+    @Update
+    suspend fun updateMember(member: TeamMember): Int
+
+    // Remove a member.
+    @Delete
+    suspend fun deleteMember(member: TeamMember): Int
+
+    // Load one member for editing.
+    @Query("SELECT * FROM team_members WHERE memberId = :memberId")
+    suspend fun getMember(memberId: Long): TeamMember?
+
+    // Keep the members list updated.
+    @Query(
+        "SELECT * FROM team_members " +
+                "ORDER BY name COLLATE NOCASE, memberId"
+    )
+    fun observeMembers(): Flow<List<TeamMember>>
 }

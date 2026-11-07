@@ -46,6 +46,20 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        // Show a message after saving or deleting a member.
+        supportFragmentManager.setFragmentResultListener(
+            MemberFormDialogFragment.RESULT_KEY,
+            this
+        ) { _, result ->
+            val deleted = result.getBoolean("deleted")
+
+            Toast.makeText(
+                this,
+                if (deleted) "Member deleted" else "Member saved",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
         val addButton = findViewById<Button>(
             R.id.btnOpenPointsForm
         )
@@ -57,11 +71,50 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        // Hold to choose a location for editing.
+        // Hold to open our temporary test menu.
         addButton.setOnLongClickListener {
-            showEditPicker()
+            showTestMenu()
             true
         }
+    }
+
+    private fun showTestMenu() {
+        if (openingPicker) return
+
+        val options = arrayOf(
+            "Edit location",
+            "Add member",
+            "Edit member"
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle("Test forms")
+            .setItems(options) { _, position ->
+                when (position) {
+                    0 -> showEditPicker()
+                    1 -> openMemberForm()
+                    2 -> showMemberPicker()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun openMemberForm(memberId: Long = 0L) {
+        val manager = supportFragmentManager
+
+        // Avoid opening the same dialog twice.
+        if (
+            manager.isStateSaved ||
+            manager.findFragmentByTag(
+                MemberFormDialogFragment.TAG
+            ) != null
+        ) {
+            return
+        }
+
+        MemberFormDialogFragment.newInstance(memberId)
+            .showNow(manager, MemberFormDialogFragment.TAG)
     }
 
     private fun showEditPicker() {
@@ -71,6 +124,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val locations = repository.points.first()
+
+                if (isFinishing || isDestroyed) return@launch
 
                 if (locations.isEmpty()) {
                     Toast.makeText(
@@ -108,6 +163,52 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(
                     this@MainActivity,
                     "Could not load locations. Please try again.",
+                    Toast.LENGTH_LONG
+                ).show()
+            } finally {
+                openingPicker = false
+            }
+        }
+    }
+
+    private fun showMemberPicker() {
+        if (openingPicker) return
+        openingPicker = true
+
+        lifecycleScope.launch {
+            try {
+                // Read the latest saved members.
+                val members = repository.members.first()
+
+                if (isFinishing || isDestroyed) return@launch
+
+                if (members.isEmpty()) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Add a member first",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@launch
+                }
+
+                val labels = members.map {
+                    "${it.name} — ID ${it.memberId}"
+                }.toTypedArray()
+
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("Choose a member to edit")
+                    .setItems(labels) { _, position ->
+                        openMemberForm(members[position].memberId)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (error: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Could not load members. Please try again.",
                     Toast.LENGTH_LONG
                 ).show()
             } finally {

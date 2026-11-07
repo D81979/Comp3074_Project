@@ -1,5 +1,6 @@
 package ca.gbc.comp3074.scavengerhuntgroup95project.data
 
+import android.util.Patterns
 import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 
@@ -13,6 +14,9 @@ class HuntRepository(private val database: HuntDatabase) {
 
     // Observe all available tags.
     val tags: Flow<List<Tag>> = dao.observeTags()
+
+    // Observe members so the list can refresh automatically.
+    val members: Flow<List<TeamMember>> = dao.observeMembers()
 
     // Load a location when opening the Edit form.
     suspend fun getPoint(pointId: Long): PointWithTags? {
@@ -138,6 +142,93 @@ class HuntRepository(private val database: HuntDatabase) {
                 false
             } else {
                 dao.deletePoint(existing.point) == 1
+            }
+        }
+    }
+
+    // Load a member when opening the Edit form.
+    suspend fun getMember(memberId: Long): TeamMember? {
+        require(memberId > 0L) {
+            "Invalid member ID"
+        }
+
+        return dao.getMember(memberId)
+    }
+
+    // Use memberId = 0 for a new member.
+    suspend fun saveMember(
+        name: String,
+        email: String = "",
+        phone: String = "",
+        memberId: Long = 0L
+    ): Long {
+
+        val cleanName = name.trim()
+        val cleanEmail = email.trim()
+        val cleanPhone = phone.trim()
+
+        require(cleanName.isNotEmpty()) {
+            "Enter a member name"
+        }
+        require(memberId >= 0L) {
+            "Invalid member ID"
+        }
+
+        // Email is optional, but check it when provided.
+        require(
+            cleanEmail.isEmpty() ||
+                    Patterns.EMAIL_ADDRESS.matcher(cleanEmail).matches()
+        ) {
+            "Enter a valid email address"
+        }
+
+        // Keep phone numbers as text to preserve + and leading zeros.
+        return database.withTransaction {
+
+            if (memberId == 0L) {
+
+                val newMember = TeamMember(
+                    name = cleanName,
+                    email = cleanEmail,
+                    phone = cleanPhone
+                )
+
+                dao.insertMember(newMember)
+
+            } else {
+
+                // Update the existing member without changing its ID.
+                val existing = dao.getMember(memberId)
+                    ?: error("This member no longer exists")
+
+                val updatedMember = existing.copy(
+                    name = cleanName,
+                    email = cleanEmail,
+                    phone = cleanPhone
+                )
+
+                check(dao.updateMember(updatedMember) == 1) {
+                    "The member could not be updated"
+                }
+
+                memberId
+            }
+        }
+    }
+
+    // Return false if the member was already removed.
+    suspend fun deleteMember(memberId: Long): Boolean {
+        require(memberId > 0L) {
+            "Invalid member ID"
+        }
+
+        return database.withTransaction {
+            val existing = dao.getMember(memberId)
+
+            if (existing == null) {
+                false
+            } else {
+                dao.deleteMember(existing) == 1
             }
         }
     }
