@@ -49,3 +49,8 @@ dependencies {
     // Generate the database implementation.
     ksp(libs.androidx.room.compiler)
 }
+
+// Save the database structure for future version changes.
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
