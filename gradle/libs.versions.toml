@@ -13,6 +13,10 @@ recyclerview = "1.4.0"
 playServicesMaps = "20.0.0"
 fragment = "1.9.1"
 
+# Database and code generation
+room = "2.8.5"
+ksp = "2.3.12"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -27,6 +31,13 @@ androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview"
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 
+# Room database libraries
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 
+# Generates Room's database code
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

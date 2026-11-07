@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,6 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- App title and menu -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/Widget.App.Toolbar"
@@ -16,6 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             app:title="@string/app_name" />
 
+        <!-- Search saved locations -->
         <EditText
             android:id="@+id/edtSearch"
             style="@style/Text.App.Body"
@@ -28,6 +31,7 @@
             android:inputType="text"
             android:padding="10dp" />
 
+        <!-- Filter by tag -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,6 +47,7 @@
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAll"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,49 +55,64 @@
                     android:text="All" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEasy"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="easy" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipHard"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="hard" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPhoto"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="photo" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipInfo"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="info" />
+
             </com.google.android.material.chip.ChipGroup>
         </HorizontalScrollView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerPoints"
+        <!-- Locations and empty message -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingBottom="88dp" />
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerPoints"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingBottom="88dp" />
+
+            <TextView
+                android:id="@+id/txtEmpty"
+                style="@style/Text.App.Hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="24dp"
+                android:gravity="center"
+                android:text="@string/no_results"
+                android:visibility="gone" />
+
+        </FrameLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/txtEmpty"
-        style="@style/Text.App.Hint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/no_results"
-        android:visibility="gone" />
-
+    <!-- Open the Points Form -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"
@@ -100,7 +120,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:contentDescription="Add point"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/dark"
-        app:tint="@color/white" />
+        app:backgroundTint="#444444"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="#FFFFFF" />
+
 </FrameLayout>

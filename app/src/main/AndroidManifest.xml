@@ -9,48 +9,53 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScavengerHunt">
 
-        <!-- Temporary: Main is the launcher until Splash is finished  -->
+        <!-- Main is the launcher while we test integration. -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SplashActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".PointFormActivity" />
-        <activity android:name=".DetailsActivity" />
+
+        <activity
+            android:name=".SplashActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".DetailsActivity"
+            android:exported="false" />
+
         <activity
             android:name=".MapActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".TeamActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".MemberFormActivity" />
+            android:exported="false" />
+
+        <activity
+            android:name=".TeamActivity"
+            android:exported="false" />
+
         <activity
             android:name=".AboutActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
+
+        <!-- Working Points Form -->
+        <activity
+            android:name=".PointsFormActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Existing team placeholders -->
+        <activity
+            android:name=".PointFormActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MemberFormActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
