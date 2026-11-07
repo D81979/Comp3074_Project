@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doOnTextChanged
@@ -33,13 +34,20 @@ class MainActivity : AppCompatActivity() {
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerPoints)
         recycler.layoutManager = LinearLayoutManager(this)
-        adapter = PointAdapter(SampleData.points) { point ->
-            val intent = Intent(this, DetailsActivity::class.java)
-            intent.putExtra("name", point.name)
-            intent.putExtra("address", point.address)
-            intent.putExtra("tags", point.tags.joinToString("  |  "))
-            startActivity(intent)
-        }
+        adapter = PointAdapter(
+            SampleData.points,
+            onClick = { point ->
+                val intent = Intent(this, DetailsActivity::class.java)
+                intent.putExtra("name", point.name)
+                intent.putExtra("address", point.address)
+                intent.putExtra("tags", point.tags.joinToString("  |  "))
+                startActivity(intent)
+            },
+            onEdit = {
+                startActivity(Intent(this, PointFormActivity::class.java))
+            },
+            onDelete = { point -> confirmDelete(point) }
+        )
         recycler.adapter = adapter
 
         findViewById<EditText>(R.id.edtSearch).doOnTextChanged { text, _, _, _ ->
@@ -56,6 +64,18 @@ class MainActivity : AppCompatActivity() {
         findViewById<FloatingActionButton>(R.id.fabAdd).setOnClickListener {
             startActivity(Intent(this, PointFormActivity::class.java))
         }
+    }
+
+    private fun confirmDelete(point: Point) {
+        AlertDialog.Builder(this)
+            .setTitle("Delete point")
+            .setMessage("Are you sure you want to delete \"${point.name}\"?")
+            .setPositiveButton("Delete") { _, _ ->
+                SampleData.points.remove(point)
+                applyFilters()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun applyFilters() {

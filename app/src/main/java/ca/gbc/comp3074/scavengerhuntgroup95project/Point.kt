@@ -12,7 +12,7 @@ data class Point(
 // we'll change it later
 
 object SampleData {
-    val points = listOf(
+    val points = mutableListOf(
         Point("CN Tower", "290 Bremner Blvd, Toronto", listOf("photo", "easy"), 4, true),
         Point("Graffiti Alley", "Rush Lane, Toronto", listOf("photo", "hard"), 0, false),
         Point("St. Lawrence Market", "93 Front St E, Toronto", listOf("info"), 3, false)
