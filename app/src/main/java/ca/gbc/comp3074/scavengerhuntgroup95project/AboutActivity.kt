@@ -13,7 +13,6 @@ class AboutActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         supportActionBar?.apply {
-            title = "Map"
             setDisplayHomeAsUpEnabled(true)
         }
     }

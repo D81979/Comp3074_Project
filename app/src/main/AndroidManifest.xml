@@ -42,7 +42,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MemberFormActivity" />
+        <activity
+            android:name=".MemberFormActivity"
+            android:exported="false" />
         <activity
             android:name=".AboutActivity"
             android:exported="true">
@@ -51,6 +53,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
     </application>
 
 </manifest>
