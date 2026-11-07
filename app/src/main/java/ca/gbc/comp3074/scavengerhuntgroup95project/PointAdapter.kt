@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class PointAdapter(
-    private val items: List<Point>,
+    private var items: List<Point>,
     private val onClick: (Point) -> Unit
 ) : RecyclerView.Adapter<PointAdapter.VH>() {
 
@@ -37,4 +37,9 @@ class PointAdapter(
     }
 
     override fun getItemCount() = items.size
+
+    fun updateList(newItems: List<Point>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 }

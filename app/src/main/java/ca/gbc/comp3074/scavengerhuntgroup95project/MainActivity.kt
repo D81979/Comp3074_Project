@@ -4,13 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var adapter: PointAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -18,17 +23,30 @@ class MainActivity : AppCompatActivity() {
 
         val recycler = findViewById<RecyclerView>(R.id.recyclerPoints)
         recycler.layoutManager = LinearLayoutManager(this)
-        recycler.adapter = PointAdapter(SampleData.points) { point ->
+        adapter = PointAdapter(SampleData.points) { point ->
             val intent = Intent(this, DetailsActivity::class.java)
             intent.putExtra("name", point.name)
             intent.putExtra("address", point.address)
             intent.putExtra("tags", point.tags.joinToString("  |  "))
             startActivity(intent)
         }
+        recycler.adapter = adapter
+
+        findViewById<EditText>(R.id.edtSearch).doOnTextChanged { text, _, _, _ ->
+            filterPoints(text.toString())
+        }
 
         findViewById<FloatingActionButton>(R.id.fabAdd).setOnClickListener {
             startActivity(Intent(this, PointFormActivity::class.java))
         }
+    }
+
+    private fun filterPoints(query: String) {
+        val result = SampleData.points.filter { point ->
+            point.name.contains(query, ignoreCase = true) ||
+                    point.tags.any { it.contains(query, ignoreCase = true) }
+        }
+        adapter.updateList(result)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
