@@ -12,7 +12,8 @@ import ca.gbc.comp3074.scavengerhuntgroup95project.data.TeamMember
 class TeamMemberAdapter(
     private val onEmailClick: (TeamMember) -> Unit,
     private val onSmsClick: (TeamMember) -> Unit,
-    private val onCallClick: (TeamMember) -> Unit
+    private val onCallClick: (TeamMember) -> Unit,
+    private val onEditClick: (TeamMember) -> Unit
 ) : RecyclerView.Adapter<TeamMemberAdapter.MemberViewHolder>() {
 
     private var members = emptyList<TeamMember>()
@@ -25,6 +26,7 @@ class TeamMemberAdapter(
         val btnEmail = itemView.findViewById<Button>(R.id.btnEmail)
         val btnSms = itemView.findViewById<Button>(R.id.btnSms)
         val btnCall = itemView.findViewById<Button>(R.id.btnCall)
+        val btnEdit = itemView.findViewById<Button>(R.id.btnEdit)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemberViewHolder {
@@ -47,6 +49,7 @@ class TeamMemberAdapter(
         holder.btnEmail.setOnClickListener { onEmailClick(member) }
         holder.btnSms.setOnClickListener { onSmsClick(member) }
         holder.btnCall.setOnClickListener { onCallClick(member) }
+        holder.btnEdit.setOnClickListener { onEditClick(member) }
     }
 
     override fun getItemCount() = members.size

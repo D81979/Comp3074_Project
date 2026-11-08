@@ -3,6 +3,7 @@ package ca.gbc.comp3074.scavengerhuntgroup95project
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import ca.gbc.comp3074.scavengerhuntgroup95project.data.TeamMember
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
 import androidx.core.net.toUri
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TeamActivity : AppCompatActivity() {
 
@@ -21,6 +23,9 @@ class TeamActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_team)
+
+        val float_btn_add = findViewById<FloatingActionButton>(R.id.float_btn_add)
+
 
         // Toolbar
 
@@ -38,7 +43,8 @@ class TeamActivity : AppCompatActivity() {
         adapter = TeamMemberAdapter(
             onEmailClick = ::email,
             onSmsClick = ::smsMember,
-            onCallClick = ::callMember
+            onCallClick = ::callMember,
+            onEditClick = ::editMember
         )
 
         val recyclerView =
@@ -54,6 +60,12 @@ class TeamActivity : AppCompatActivity() {
             huntDao.observeMembers().collect { members ->
                 adapter.submitList(members)
             }
+        }
+
+        float_btn_add.setOnClickListener{
+            val intent = Intent(this, MemberFormActivity::class.java)
+
+            startActivity(intent)
         }
     }
 
@@ -83,5 +95,18 @@ class TeamActivity : AppCompatActivity() {
         }
 
         startActivity(intent)
+    }
+
+    private fun editMember(member: TeamMember) {
+
+        val dialog =
+            MemberFormDialogFragment.newInstance(
+                member.memberId
+            )
+
+        dialog.show(
+            supportFragmentManager,
+            MemberFormDialogFragment.TAG
+        )
     }
 }

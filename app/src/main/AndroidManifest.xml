@@ -26,7 +26,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".PointFormActivity" />
-        <activity android:name=".DetailsActivity" />
+        <activity
+            android:name=".DetailsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MapActivity"
             android:exported="true">
@@ -44,7 +51,7 @@
         </activity>
         <activity
             android:name=".MemberFormActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".AboutActivity"
             android:exported="true">
