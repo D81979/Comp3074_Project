@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 class MemberFormActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dialog_member_form)
+        setContentView(R.layout.activity_member_form)
+        setupBackToolbar(R.string.title_member_form)
     }
 }
