@@ -16,11 +16,15 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import ca.gbc.comp3074.scavengerhuntgroup95project.data.HuntDatabase
 import ca.gbc.comp3074.scavengerhuntgroup95project.data.PointOfInterest
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 
@@ -28,6 +32,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val LOCATION_PERMISSION_REQUEST = 100
     private var selectedPoint: PointOfInterest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +47,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             0L
         )
         val myplace = findViewById<FloatingActionButton>(R.id.float_btn_myplace)
+
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST
+            )
+        }
 
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this)
@@ -62,6 +76,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     .getPointWithTags(pointId)
 
             selectedPoint = pointWithTags?.point
+
+            mapFragment.getMapAsync(this@MapActivity)
         }
 
         // Get directions from current location to selected destination
@@ -69,44 +85,44 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         findViewById<Button>(R.id.btnDirections)
             .setOnClickListener {
 
-                //----------- (Uncomment in final implementation)
-//                val point = selectedPoint
-//
-//                if (
-//                    point?.latitude != null &&
-//                    point.longitude != null
-//                ) {
-//
-//                    val destinationLat = point.latitude
-//                    val destinationLng = point.longitude
-
-                    val destinationLat = 43.6532
-                    val destinationLng = -79.3832
-
-                    val uri = "google.navigation:q=$destinationLat,$destinationLng".toUri()
-
-                    val intent = Intent(
-                        Intent.ACTION_VIEW,
-                        uri
-                    )
-
-                    intent.setPackage("com.google.android.apps.maps")
-                    startActivity(intent)
-                //}
+                selectedPoint?.let { point ->
+                    val destination = getLatLngFromAddress(point.address)
+                    if (destination != null) {
+                        val uri = "google.navigation:q=${destination.latitude},${destination.longitude}".toUri()
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            uri
+                        )
+                        intent.setPackage("com.google.android.apps.maps")
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Invalid location",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
 
         // Go back to current user's location
         myplace.setOnClickListener {
-            val currentLocation = LatLng(
-                43.6756, -79.4106
-            )
-
-            mMap.animateCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    currentLocation,
-                    13f
-                )
-            )
+            if (
+                checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                    location?.let {
+                        val currentLocation = LatLng(it.latitude, it.longitude)
+                        mMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                currentLocation,
+                                13f
+                            )
+                        )
+                    }
+                }
+            }
         }
 
     }
@@ -122,65 +138,81 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        //--------- Get point's location (Uncomment in final implementation)
-//        val point = selectedPoint
-//        if (
-//            point?.latitude != null &&
-//            point.longitude != null
-//        ) {
-//            // Get points location
-//            val destination = LatLng(
-//                point.latitude, point.longitude
-//            )
+        if (
+            checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            mMap.isMyLocationEnabled = true
+            getCurrentLocation()
+        }
 
-        val destination = LatLng(
-            43.6532, -79.3832
-        )
+        selectedPoint?.let { point ->
+            val destination = getLatLngFromAddress(point.address)
+            if (destination != null) {
+                mMap.addMarker(
+                    MarkerOptions()
+                        .position(destination)
+                        .title(point.name)
+                )
+                mMap.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(destination, 13f)
+                )
+            } else {
+                Toast.makeText(
+                    this,
+                    "Invalid location",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
-        mMap.addMarker(
-            MarkerOptions()
-                .position(destination)
-                .title("Destination")
-        )
+    @RequiresPermission(
+        anyOf = [
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ]
+    )
+    private fun getCurrentLocation() {
 
-        val currentLocation = LatLng(
-            43.6756, -79.4106 // Temporarily hardcoded
-        )
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    val currentLocation = LatLng(
+                        location.latitude,
+                        location.longitude
+                    )
+                    mMap.addMarker(
+                    MarkerOptions()
+                        .position(currentLocation)
+                        .title("You")
+                        .icon(
+                            BitmapDescriptorFactory.defaultMarker(
+                                BitmapDescriptorFactory.HUE_BLUE
+                            )
+                        )
+                    )
+                }
+            }
+    }
 
-        mMap.addMarker(
-            MarkerOptions()
-                .position(currentLocation)
-                .title("You")
-        )
+    private fun getLatLngFromAddress(address: String): LatLng? {
+        return try {
+            val geocoder = Geocoder(this)
 
-        mMap.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(currentLocation, 13f)
-        )
+            val locations = geocoder.getFromLocationName(address, 1)
 
-            // ----------- Get current user's location (Uncomment in final implementation)
-            //        fusedLocationClient.lastLocation
-            //            .addOnSuccessListener { location ->
-            //                var currentLocation = LatLng(
-            //                    43.6756, -79.4106
-            //                )
-            //
-            //                if (location != null) {
-            //                        currentLocation = LatLng(
-            //                        location.latitude, location.longitude
-            //                    )
-            //
-            //                    mMap.addMarker(
-            //                        MarkerOptions()
-            //                            .position(currentLocation)
-            //                            .title("You")
-            //                    )
-            //
-            //                    mMap.moveCamera(
-            //                        CameraUpdateFactory.newLatLngZoom(currentLocation, 5f)
-            //                    )
-            //                }
-            //
-            //            }
-        //}
+            if (!locations.isNullOrEmpty()) {
+                LatLng(
+                    locations[0].latitude,
+                    locations[0].longitude
+                )
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

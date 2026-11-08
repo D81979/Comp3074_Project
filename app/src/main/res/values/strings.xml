@@ -20,16 +20,6 @@
     <string name="sms">SMS</string>
     <string name="call">Call</string>
 
-    <string name="temp1_name">Alex Carter</string>
-    <string name="temp1_num">416–555–0101</string>
-    <string name="temp1_email">alex.carter@email.com</string>
-    <string name="temp2_name">Sam Rivera</string>
-    <string name="temp2_num">416–555–0102</string>
-    <string name="temp2_email">sam.rivera@email.com</string>
-    <string name="temp3_name">Jordan Lee</string>
-    <string name="temp3_num">416–555–0103</string>
-    <string name="temp3_email">jordan.lee@email.com</string>
-
     <string name="map_get_dir">Get Directions</string>
     <string name="no_results">No results found</string>
     
