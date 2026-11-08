@@ -1,6 +1,8 @@
 package ca.gbc.comp3074.scavengerhuntgroup95project
 
+import android.Manifest
 import android.os.Bundle
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 
 
@@ -11,14 +13,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import android.content.Intent
+import android.widget.Button
+import androidx.core.net.toUri
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
+
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(this)
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -32,6 +43,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
 
         mapFragment.getMapAsync(this)
+
+        findViewById<Button>(R.id.btnDirections)
+            .setOnClickListener {
+
+                val destinationLat = 43.6532
+                val destinationLng = -79.3832
+
+                val uri = "google.navigation:q=$destinationLat,$destinationLng".toUri()
+
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    uri
+                )
+
+                intent.setPackage(
+                    "com.google.android.apps.maps"
+                )
+
+                startActivity(intent)
+            }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -39,6 +70,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         return true
     }
 
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -49,8 +81,42 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 .title("Toronto")
         )
 
-        mMap.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(toronto, 12f)
+        var currentLocation = LatLng(
+            43.6756, -79.4106
         )
+
+        mMap.addMarker(
+            MarkerOptions()
+                .position(currentLocation)
+                .title("You")
+        )
+
+        mMap.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(currentLocation, 13f)
+        )
+
+//        fusedLocationClient.lastLocation
+//            .addOnSuccessListener { location ->
+//                var currentLocation = LatLng(
+//                    43.6756, -79.4106
+//                )
+//
+//                if (location != null) {
+//                        currentLocation = LatLng(
+//                        location.latitude, location.longitude
+//                    )
+//
+//                    mMap.addMarker(
+//                        MarkerOptions()
+//                            .position(currentLocation)
+//                            .title("You")
+//                    )
+//
+//                    mMap.moveCamera(
+//                        CameraUpdateFactory.newLatLngZoom(currentLocation, 5f)
+//                    )
+//                }
+//
+//            }
     }
 }
