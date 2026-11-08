@@ -28,6 +28,17 @@
 
     </FrameLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/float_btn_myplace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#D0D0D0"
+        android:clickable="true"
+        android:contentDescription="My location"
+        android:focusable="true"
+        android:layout_gravity = "end"
+        app:srcCompat="@android:drawable/ic_menu_myplaces" />
+
     <Button
         android:id="@+id/btnDirections"
         android:layout_width="match_parent"
